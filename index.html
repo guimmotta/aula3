@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 3 - Review: Bringing It All Together</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #f4f1ec;
+    color: #2b2b2b;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 600px; margin: 0 auto; padding: 16px; }
+  header.top {
+    background: #3d3552;
+    color: #fff;
+    padding: 24px 16px;
+    text-align: center;
+  }
+  header.top h1 { margin: 0 0 6px; font-size: 22px; }
+  header.top p { margin: 0; font-size: 14px; opacity: 0.85; }
+  .section {
+    background: #fff;
+    border-radius: 14px;
+    padding: 18px;
+    margin: 16px 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  }
+  .section-num {
+    display: inline-block;
+    background: #3d3552;
+    color: #fff;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 26px;
+    font-size: 13px;
+    font-weight: bold;
+    margin-right: 8px;
+    flex-shrink: 0;
+  }
+  h2 { font-size: 17px; margin: 0 0 10px; display: flex; align-items: center; }
+  .instructions { font-size: 14px; color: #555; margin-bottom: 14px; }
+
+  .task-card {
+    background: #fff6e6;
+    border: 2px solid #e8c471;
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 14px;
+    margin-top: 12px;
+  }
+  .task-card ul { margin: 8px 0 0; padding-left: 18px; }
+
+  .quiz-card { border: 1px solid #e2ddd2; border-radius: 10px; padding: 12px; margin-bottom: 14px; }
+  .quiz-tag {
+    display: inline-block;
+    font-size: 10.5px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #6a5b8c;
+    background: #ece7f5;
+    border-radius: 8px;
+    padding: 2px 8px;
+    margin-bottom: 8px;
+  }
+  .quiz-question { font-size: 14.5px; margin-bottom: 10px; }
+  .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+  .quiz-opt {
+    background: #f7f5f0;
+    border: 2px solid #e2ddd2;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 14px;
+    min-height: 44px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #3d3552;
+    text-align: left;
+  }
+  .quiz-opt.correct { background: #dff3e3; border-color: #57a76b; }
+  .quiz-opt.incorrect { background: #fbe3e0; border-color: #d9695f; }
+
+  .gap-sentence { font-size: 15px; margin-bottom: 4px; line-height: 1.9; }
+  .gap-slot {
+    display: inline-block;
+    min-width: 80px;
+    border-bottom: 2px solid #6a5b8c;
+    text-align: center;
+    font-weight: bold;
+    color: #3d3552;
+    padding: 2px 4px;
+  }
+  .word-bank { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+  .word-chip {
+    background: #ece7f5;
+    border: 2px solid #6a5b8c;
+    border-radius: 20px;
+    padding: 8px 14px;
+    font-size: 14px;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: #3d3552;
+    font-weight: 600;
+  }
+  .word-chip.used { opacity: 0.35; pointer-events: none; }
+
+  .narrative-text { font-size: 15.5px; line-height: 2.1; }
+  .drop-slot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 100px;
+    min-height: 34px;
+    border: 2px dashed #6a5b8c;
+    border-radius: 8px;
+    vertical-align: middle;
+    padding: 3px 8px;
+    margin: 2px 2px;
+    font-weight: bold;
+    color: #3d3552;
+    background: #f7f5f0;
+    touch-action: none;
+  }
+  .drop-slot.filled { border-style: solid; background: #ece7f5; cursor: grab; }
+  .drop-slot.correct-locked { border-style: solid; border-color: #57a76b; background: #dff3e3; color: #2f7a44; cursor: default; }
+  .drop-slot.wrong-flash { border-color: #d9695f; background: #fbe3e0; color: #b03a2e; }
+  .drag-chip {
+    background: #ece7f5;
+    border: 2px solid #6a5b8c;
+    border-radius: 20px;
+    padding: 8px 14px;
+    font-size: 14px;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    cursor: grab;
+    color: #3d3552;
+    font-weight: 600;
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .drag-chip.dragging { opacity: 0.3; }
+  .drag-clone { position: fixed; pointer-events: none; z-index: 1000; opacity: 0.95; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+  .done-btn {
+    display: block;
+    width: 100%;
+    background: #3d3552;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 10px;
+    min-height: 44px;
+    cursor: pointer;
+  }
+  .narrative-feedback { font-size: 13.5px; font-weight: bold; margin-top: 10px; text-align: center; min-height: 18px; }
+  .narrative-feedback.ok { color: #2f7a44; }
+  .narrative-feedback.partial { color: #8a6a1f; }
+
+  .flash-card {
+    border: 2px solid #e2ddd2;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    min-height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transition: background 0.15s;
+  }
+  .flash-front { font-size: 14.5px; color: #3d3552; }
+  .flash-back { font-size: 15px; font-weight: bold; color: #2f7a44; display: none; }
+  .flash-card.flipped .flash-front { display: none; }
+  .flash-card.flipped .flash-back { display: block; }
+  .flash-card.known { border-color: #57a76b; background: #f3fbf5; }
+  .flash-card.review { border-color: #e8c471; background: #fffaf0; }
+  .flash-hint { font-size: 11px; color: #999; margin-top: 6px; }
+  .flash-rate { display: flex; gap: 8px; margin-top: -6px; margin-bottom: 14px; }
+  .flash-rate button {
+    flex: 1;
+    border: none;
+    border-radius: 8px;
+    padding: 8px;
+    font-size: 12.5px;
+    font-weight: bold;
+    cursor: pointer;
+    min-height: 36px;
+  }
+  .flash-rate .btn-known { background: #dff3e3; color: #2f7a44; }
+  .flash-rate .btn-review { background: #fff1d6; color: #8a6a1f; }
+
+  .map-flow { display: flex; flex-direction: column; align-items: center; gap: 4px; margin: 14px 0; }
+  .map-step {
+    background: #3d3552;
+    color: #fff;
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+    max-width: 280px;
+  }
+  .map-arrow { font-size: 16px; color: #6a5b8c; }
+
+  .reference-toggle {
+    display: block;
+    width: 100%;
+    background: #ece7f5;
+    color: #3d3552;
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 8px;
+    min-height: 44px;
+    cursor: pointer;
+    text-align: left;
+  }
+  .reference-box { display: none; margin-top: 12px; }
+  .reference-box.show { display: block; }
+  .ref-cat { font-size: 12px; font-weight: bold; text-transform: uppercase; color: #6a5b8c; margin: 12px 0 4px; }
+  .ref-cat.first { margin-top: 0; }
+  .ref-phrase { font-size: 14px; margin-bottom: 4px; padding-left: 4px; }
+
+  .reset-btn {
+    display: block;
+    width: 100%;
+    background: #3d3552;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 14px;
+    margin-top: 8px;
+    min-height: 44px;
+    cursor: pointer;
+  }
+  footer { text-align: center; padding: 20px 16px 30px; font-size: 13px; color: #8a8a8a; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <h1>Review: Bringing It All Together</h1>
+  <p>Lesson 3 &middot; Lessons 1 &amp; 2 Combined</p>
+</header>
+
+<div class="wrap">
+
+  <div class="section">
+    <h2><span class="section-num">1</span>Before we start</h2>
+    <p class="instructions">Close your notes. Talk for 60 seconds: Who are you, what is your role, and what does the Stability Program involve? Don't worry about mistakes &mdash; this is just to see what you remember.</p>
+  </div>
+
+  <div class="section">
+    <h2><span class="section-num">2</span>Let's recap</h2>
+    <div id="quiz-container"></div>
+  </div>
+
+  <div class="section">
+    <h2><span class="section-num">3</span>Build the full story</h2>
+    <p class="instructions">Drag the correct word from the bank into each blank. When every blank is filled, tap "Done" to check your answers.</p>
+    <div id="narrative"></div>
+    <div class="word-bank" id="narrative-bank"></div>
+    <button class="done-btn" onclick="checkNarrativeDone()">Done</button>
+    <div class="narrative-feedback" id="narrative-feedback"></div>
+  </div>
+
+  <div class="section">
+    <h2><span class="section-num">4</span>Safe language flashcards</h2>
+    <p class="instructions">Read the situation, think of your phrase, then tap the card to check yourself.</p>
+    <div id="flash-container"></div>
+  </div>
+
+  <div class="section">
+    <h2><span class="section-num">5</span>Full mock interview</h2>
+    <p class="instructions">Your teacher will interview you like a real job interview, using questions about your role, your process, and a few tricky ones too. You can glance at the map below if you get stuck.</p>
+
+    <div class="map-flow" id="final-map"></div>
+
+    <button class="reference-toggle" onclick="toggleRef('framework-ref')">Remember the framework &#9662;</button>
+    <div class="reference-box" id="framework-ref">
+      <div class="ref-phrase">Purpose &rarr; What you monitor &rarr; How &rarr; Why it matters</div>
+    </div>
+
+    <div class="task-card">
+      <strong>GOAL</strong>
+      <p>Try to answer without checking the map first. Only look if you really need to.</p>
+    </div>
+  </div>
+
+  <button class="reset-btn" onclick="resetAll()">Restart activities</button>
+
+</div>
+
+<footer>@teacherpalomafonseca</footer>
+
+<script>
+function toggleRef(id) {
+  document.getElementById(id).classList.toggle('show');
+}
+
+/* ---------- Activity 2: mixed retrieval quiz ---------- */
+var quizQuestions = [
+  { tag: 'Lesson 1 \u00b7 Vocabulary', q: 'What do we call the period during which the product is expected to remain within specifications?', answer: 'shelf life', options: ['shelf life', 'storage conditions', 'ongoing study'] },
+  { tag: 'Lesson 1 \u00b7 Vocabulary', q: 'What do we call the data generated during stability studies?', answer: 'stability data', options: ['stability data', 'time point', 'stability study'] },
+  { tag: 'Lesson 1 \u00b7 Vocabulary', q: 'What do we call the temperature and humidity conditions a product is kept in?', answer: 'storage conditions', options: ['storage conditions', 'time point', 'stability study'] },
+  { tag: 'Lesson 1 \u00b7 Chunks', q: 'Choose the correct sentence.', answer: 'My role involves monitoring stability studies.', options: ['My role involves monitoring stability studies.', 'My role involve monitor stability studies.'] },
+  { tag: 'Lesson 2 \u00b7 Process', q: 'What comes right after "Storage" in the stability process?', answer: 'Time points', options: ['Time points', 'Testing', 'Review'] },
+  { tag: 'Lesson 2 \u00b7 Process', q: 'What comes right before "Review" in the stability process?', answer: 'Results', options: ['Results', 'Trending', 'Testing'] },
+  { tag: 'Lesson 2 \u00b7 Safe language', q: 'The auditor asks something you genuinely don\u2019t know. What do you say?', answer: "I'd need to confirm that with the QA team.", options: ["I'd need to confirm that with the QA team.", "I don't know.", "That's not my problem."] },
+  { tag: 'Lesson 2 \u00b7 Safe language', q: 'You need a few seconds before answering. What do you say?', answer: 'Let me think for a moment.', options: ['Let me think for a moment.', 'Wait.', 'Um... um...'] }
+];
+
+function buildQuiz() {
+  var container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  var shuffledQ = quizQuestions.slice().sort(function() { return Math.random() - 0.5; });
+  for (var i = 0; i < shuffledQ.length; i++) {
+    var qData = shuffledQ[i];
+    var card = document.createElement('div');
+    card.className = 'quiz-card';
+
+    var tag = document.createElement('div');
+    tag.className = 'quiz-tag';
+    tag.textContent = qData.tag;
+    card.appendChild(tag);
+
+    var qText = document.createElement('div');
+    qText.className = 'quiz-question';
+    qText.textContent = qData.q;
+    card.appendChild(qText);
+
+    var optWrap = document.createElement('div');
+    optWrap.className = 'quiz-options';
+    var shuffledOpts = qData.options.slice().sort(function() { return Math.random() - 0.5; });
+
+    for (var k = 0; k < shuffledOpts.length; k++) {
+      var optBtn = document.createElement('button');
+      optBtn.className = 'quiz-opt';
+      optBtn.textContent = shuffledOpts[k];
+      var isCorrectOpt = shuffledOpts[k] === qData.answer;
+      optBtn.onclick = (function(btn, correct) {
+        return function() { answerQuiz(btn, correct); };
+      })(optBtn, isCorrectOpt);
+      optWrap.appendChild(optBtn);
+    }
+    card.appendChild(optWrap);
+    container.appendChild(card);
+  }
+}
+
+function answerQuiz(btnEl, isCorrect) {
+  var wrapEl = btnEl.parentElement;
+  if (isCorrect) {
+    var allOpts = wrapEl.querySelectorAll('.quiz-opt');
+    for (var i = 0; i < allOpts.length; i++) { allOpts[i].onclick = null; allOpts[i].style.opacity = '0.6'; }
+    btnEl.style.opacity = '1';
+    btnEl.classList.add('correct');
+  } else {
+    btnEl.classList.add('incorrect');
+    setTimeout(function() { btnEl.classList.remove('incorrect'); }, 700);
+  }
+}
+
+/* ---------- Activity 3: full narrative — drag & drop ---------- */
+var narrativeAnswers = ['First', 'Then', 'are stored', 'are tested', 'after that', 'are reviewed', 'Finally', 'is investigated'];
+var narrativeSegments = [
+  { textAfter: ', samples are collected according to the protocol. ' },
+  { textAfter: ', the samples ' },
+  { textAfter: ' under the specified conditions. Samples ' },
+  { textAfter: ' at predefined time points, and ' },
+  { textAfter: ' the results ' },
+  { textAfter: ' against the established specifications. ' },
+  { textAfter: ', any deviation ' },
+  { textAfter: ' and a conclusion is reached.' }
+];
+var activeDrag = null;
+
+function buildNarrative() {
+  var wrap = document.getElementById('narrative');
+  wrap.innerHTML = '';
+  var container = document.createElement('div');
+  container.className = 'narrative-text';
+  for (var i = 0; i < narrativeSegments.length; i++) {
+    var slot = document.createElement('span');
+    slot.className = 'drop-slot';
+    slot.id = 'dslot' + (i + 1);
+    slot.setAttribute('data-answer', narrativeAnswers[i]);
+    attachSlotDragHandlers(slot);
+    container.appendChild(slot);
+    container.appendChild(document.createTextNode(narrativeSegments[i].textAfter));
+  }
+  wrap.appendChild(container);
+}
+
+function buildNarrativeBank() {
+  var bank = document.getElementById('narrative-bank');
+  bank.innerHTML = '';
+  var shuffled = narrativeAnswers.slice().sort(function() { return Math.random() - 0.5; });
+  for (var i = 0; i < shuffled.length; i++) {
+    bank.appendChild(makeDragChip(shuffled[i]));
+  }
+}
+
+function makeDragChip(word) {
+  var chip = document.createElement('div');
+  chip.className = 'drag-chip';
+  chip.textContent = word;
+  chip.setAttribute('data-word', word);
+  attachChipDragHandlers(chip);
+  return chip;
+}
+
+function attachChipDragHandlers(chip) {
+  chip.addEventListener('pointerdown', function(e) {
+    startDrag(e, chip, chip.getAttribute('data-word'), null);
+  });
+}
+
+function attachSlotDragHandlers(slotEl) {
+  slotEl.addEventListener('pointerdown', function(e) {
+    if (!slotEl.classList.contains('filled') || slotEl.classList.contains('correct-locked')) return;
+    var word = slotEl.getAttribute('data-filled');
+    startDrag(e, slotEl, word, slotEl);
+  });
+}
+
+function startDrag(e, sourceEl, word, sourceSlotEl) {
+  e.preventDefault();
+  var clone = document.createElement('div');
+  clone.className = 'drag-chip drag-clone';
+  clone.textContent = word;
+  document.body.appendChild(clone);
+  positionClone(clone, e.clientX, e.clientY);
+  activeDrag = { word: word, clone: clone, sourceEl: sourceEl, sourceSlotEl: sourceSlotEl };
+  if (sourceSlotEl) {
+    sourceSlotEl.classList.remove('filled');
+    sourceSlotEl.removeAttribute('data-filled');
+    sourceSlotEl.textContent = '';
+  } else {
+    sourceEl.classList.add('dragging');
+  }
+  document.addEventListener('pointermove', onDragMove);
+  document.addEventListener('pointerup', onDragEnd);
+}
+
+function positionClone(clone, x, y) {
+  clone.style.left = (x - 40) + 'px';
+  clone.style.top = (y - 20) + 'px';
+}
+
+function onDragMove(e) {
+  if (!activeDrag) return;
+  positionClone(activeDrag.clone, e.clientX, e.clientY);
+}
+
+function onDragEnd(e) {
+  if (!activeDrag) return;
+  document.removeEventListener('pointermove', onDragMove);
+  document.removeEventListener('pointerup', onDragEnd);
+
+  var dropEl = document.elementFromPoint(e.clientX, e.clientY);
+  var slotEl = dropEl ? dropEl.closest('.drop-slot') : null;
+  var word = activeDrag.word;
+
+  if (slotEl && !slotEl.classList.contains('filled') && !slotEl.classList.contains('correct-locked')) {
+    slotEl.classList.add('filled');
+    slotEl.setAttribute('data-filled', word);
+    slotEl.textContent = word;
+    if (!activeDrag.sourceSlotEl) {
+      activeDrag.sourceEl.remove();
+    }
+  } else {
+    if (activeDrag.sourceSlotEl) {
+      activeDrag.sourceSlotEl.classList.add('filled');
+      activeDrag.sourceSlotEl.setAttribute('data-filled', word);
+      activeDrag.sourceSlotEl.textContent = word;
+    } else {
+      activeDrag.sourceEl.classList.remove('dragging');
+    }
+  }
+  activeDrag.clone.remove();
+  activeDrag = null;
+}
+
+function checkNarrativeDone() {
+  var slots = document.querySelectorAll('#narrative .drop-slot');
+  var feedbackEl = document.getElementById('narrative-feedback');
+  var allFilled = true;
+  for (var i = 0; i < slots.length; i++) {
+    if (!slots[i].classList.contains('filled') && !slots[i].classList.contains('correct-locked')) { allFilled = false; }
+  }
+  if (!allFilled) {
+    feedbackEl.textContent = 'Fill in all the blanks first, then press Done.';
+    feedbackEl.className = 'narrative-feedback partial';
+    return;
+  }
+
+  var correctCount = 0;
+  for (var j = 0; j < slots.length; j++) {
+    var slot = slots[j];
+    if (slot.classList.contains('correct-locked')) { correctCount++; continue; }
+    var answer = slot.getAttribute('data-answer');
+    var filled = slot.getAttribute('data-filled');
+    if (filled === answer) {
+      slot.classList.add('correct-locked');
+      slot.classList.remove('filled');
+      correctCount++;
+    } else {
+      slot.classList.add('wrong-flash');
+      (function(s, w) {
+        setTimeout(function() {
+          s.classList.remove('wrong-flash', 'filled');
+          s.removeAttribute('data-filled');
+          s.textContent = '';
+          document.getElementById('narrative-bank').appendChild(makeDragChip(w));
+        }, 700);
+      })(slot, filled);
+    }
+  }
+
+  if (correctCount === slots.length) {
+    feedbackEl.textContent = '\uD83C\uDF89 All correct! Great job.';
+    feedbackEl.className = 'narrative-feedback ok';
+  } else {
+    feedbackEl.textContent = correctCount + ' of ' + slots.length + ' correct so far \u2014 the wrong ones went back to the word bank. Try again!';
+    feedbackEl.className = 'narrative-feedback partial';
+  }
+}
+
+/* ---------- Activity 4: safe language flashcards ---------- */
+var flashData = [
+  { front: 'The auditor asks something you genuinely don\u2019t know.', back: "I'd need to confirm that with the QA team." },
+  { front: 'You need a few seconds before answering.', back: 'Let me think for a moment.' },
+  { front: 'You didn\u2019t understand the question.', back: 'Could you clarify what you mean by that?' },
+  { front: 'You want to make sure you understood before answering.', back: "If I understand correctly, you're asking about..." },
+  { front: 'The question is really about another team\u2019s work.', back: "That's handled by our QA team, but I can explain my role in the process." }
+];
+
+function buildFlashcards() {
+  var container = document.getElementById('flash-container');
+  container.innerHTML = '';
+  for (var i = 0; i < flashData.length; i++) {
+    var wrapper = document.createElement('div');
+
+    var card = document.createElement('div');
+    card.className = 'flash-card';
+    card.innerHTML = '<div><div class="flash-front">' + flashData[i].front + '</div>' +
+      '<div class="flash-back">' + flashData[i].back + '</div>' +
+      '<div class="flash-hint">tap to flip</div></div>';
+    card.onclick = (function(el) { return function() { el.classList.toggle('flipped'); }; })(card);
+    wrapper.appendChild(card);
+
+    var rateWrap = document.createElement('div');
+    rateWrap.className = 'flash-rate';
+    var knownBtn = document.createElement('button');
+    knownBtn.className = 'btn-known';
+    knownBtn.textContent = 'I knew it';
+    knownBtn.onclick = (function(c) { return function() { c.classList.add('known'); c.classList.remove('review'); }; })(card);
+    var reviewBtn = document.createElement('button');
+    reviewBtn.className = 'btn-review';
+    reviewBtn.textContent = 'Review again';
+    reviewBtn.onclick = (function(c) { return function() { c.classList.add('review'); c.classList.remove('known'); }; })(card);
+    rateWrap.appendChild(knownBtn);
+    rateWrap.appendChild(reviewBtn);
+    wrapper.appendChild(rateWrap);
+
+    container.appendChild(wrapper);
+  }
+}
+
+/* ---------- Activity 5: final map ---------- */
+var processSteps = ['Protocol', 'Samples', 'Storage', 'Time points', 'Testing', 'Results', 'Review', 'Trending', 'Conclusion'];
+function buildFinalMap() {
+  var map = document.getElementById('final-map');
+  map.innerHTML = '';
+  for (var i = 0; i < processSteps.length; i++) {
+    var stepDiv = document.createElement('div');
+    stepDiv.className = 'map-step';
+    stepDiv.textContent = processSteps[i];
+    map.appendChild(stepDiv);
+    if (i < processSteps.length - 1) {
+      var arrow = document.createElement('div');
+      arrow.className = 'map-arrow';
+      arrow.innerHTML = '&#8595;';
+      map.appendChild(arrow);
+    }
+  }
+}
+
+/* ---------- reset ---------- */
+function resetAll() {
+  buildQuiz();
+  buildNarrative();
+  buildNarrativeBank();
+  document.getElementById('narrative-feedback').textContent = '';
+  document.getElementById('narrative-feedback').className = 'narrative-feedback';
+  buildFlashcards();
+  var refs = document.querySelectorAll('.reference-box');
+  for (var r = 0; r < refs.length; r++) { refs[r].classList.remove('show'); }
+}
+
+window.addEventListener('load', function() {
+  buildQuiz();
+  buildNarrative();
+  buildNarrativeBank();
+  buildFlashcards();
+  buildFinalMap();
+});
+</script>
+
+</body>
+</html>
